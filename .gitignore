@@ -1,0 +1,6 @@
+kpsinvo/kpsinvo/settings.py
+kpsinvo/db.sqlite3
+*.pyc
+env/
+.idea/
+kpsinvo/images/
