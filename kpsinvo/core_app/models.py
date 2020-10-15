@@ -16,6 +16,8 @@ class Food(models.Model):
     name = models.CharField(max_length=50)
     picture = models.ImageField(upload_to="images/", blank=True)
     barcode_manufacturer = models.CharField(max_length=50, blank=True)
+    price = models.FloatField(default=1)  # En euros
+    price_cotisant = models.FloatField(default=0.9)  # En euros
 
     def __str__(self):
         return self.name
@@ -32,3 +34,4 @@ class FoodStock(models.Model):
 class FoodSale(models.Model):
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
+    is_cotisant = models.BooleanField(default=False)

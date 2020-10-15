@@ -11,13 +11,21 @@ def create_api(request, name, barecode_kps=None, barecode_manufacturer=None):
     return HttpResponse('ok')
 
 
-def sell_food_api(request, barecode_manufacturer):
+def get_food(request, barecode_manufacturer):
+    try:
+        food = Food.objects.find(barecode_manufacturer=barecode_manufacturer)
+        return HttpResponse({"name": food.name, "price": food.price, "price_cotisant": food.price_cotisant})
+    except Food.DoesNotExist:
+        return HttpResponseNotFound('Food not found')
+
+
+def sell_food_api(request, barecode_manufacturer, is_cotisant):
     try:
         food = Food.objects.find(barecode_manufacturer=barecode_manufacturer)
         foodstock = FoodStock.objects.find(food=food)
         foodstock.stock -= 1
         foodstock.save()
-        foodsale = FoodSale(food=food, date=timezone.now())
+        foodsale = FoodSale(food=food, date=timezone.now(), is_cotisant=is_cotisant == 1)
         foodsale.save()
         return HttpResponse('ok')
     except Food.DoesNotExist:
