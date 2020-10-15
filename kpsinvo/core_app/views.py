@@ -1,5 +1,29 @@
 from django.shortcuts import render, HttpResponse
+from django.http import HttpResponseNotFound
 from .forms import ThingForm
+from .models import Thing, Food, FoodStock, FoodSale
+from django.utils import timezone
+
+
+def create_api(request, name, barecode_kps=None, barecode_manufacturer=None):
+    thing = Thing(name=name, barecode_kps=barecode_kps, barecode_manufacturer=barecode_manufacturer)
+    thing.save()
+    return HttpResponse('ok')
+
+
+def sell_food_api(request, barecode_manufacturer):
+    try:
+        food = Food.objects.find(barecode_manufacturer=barecode_manufacturer)
+        foodstock = FoodStock.objects.find(food=food)
+        foodstock.stock -= 1
+        foodstock.save()
+        foodsale = FoodSale(food=food, date=timezone.now())
+        foodsale.save()
+        return HttpResponse('ok')
+    except Food.DoesNotExist:
+        return HttpResponseNotFound('Food not found')
+    except FoodStock.DoesNotExist:
+        return HttpResponseNotFound('FoodStock not found')
 
 
 # Create your views here.
