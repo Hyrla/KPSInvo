@@ -35,3 +35,14 @@ class FoodSale(models.Model):
     food = models.ForeignKey(Food, on_delete=models.DO_NOTHING)
     date = models.DateTimeField()
     is_cotisant = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.date
+
+
+class APIToken(models.Model):
+    name = models.CharField(max_length=30)
+    key = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
